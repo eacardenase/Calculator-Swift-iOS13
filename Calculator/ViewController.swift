@@ -11,6 +11,17 @@ import UIKit
 class ViewController: UIViewController {
     
     private var isFinishedTypingNumber: Bool = true
+    private var displayValue: Double {
+        get {
+            guard let number = Double(displayLabel.text!) else { fatalError("Cannot convert display label text to a Double.") }
+            
+            return number
+        }
+        
+        set {
+            displayLabel.text = String(newValue)
+        }
+    }
     
     @IBOutlet weak var displayLabel: UILabel!
     
@@ -18,15 +29,13 @@ class ViewController: UIViewController {
         
         isFinishedTypingNumber = true
         
-        guard let number = Double(displayLabel.text!) else { fatalError("Cannot convert display label text to a Double.") }
-        
         if let calcMethod = sender.currentTitle {
             if calcMethod == "+/-" {
-                displayLabel.text = String(number * -1)
+                displayValue *= -1
             } else if calcMethod == "AC" {
-                displayLabel.text = "0"
+                displayValue = 0
             } else if calcMethod == "%" {
-                displayLabel.text = String(number / 100)
+                displayValue /= 100
             }
         }
     }
@@ -35,11 +44,20 @@ class ViewController: UIViewController {
         
         if let number = sender.currentTitle {
             if isFinishedTypingNumber {
-                displayLabel.text = number
+                if number == "." {
+                    displayLabel.text = "0."
+                } else {
+                    displayLabel.text = number
+                }
                 
                 isFinishedTypingNumber = false
             } else {
-                displayLabel.text?.append(number)
+                if number == "." && displayLabel.text!.contains(".") {
+                    return
+                    
+                } else {
+                    displayLabel.text?.append(number)
+                }
             }
         }
     
