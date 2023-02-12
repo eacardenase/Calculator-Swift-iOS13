@@ -10,20 +10,26 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    private var isFinishedTypingNumber: Bool = true
+    
     @IBOutlet weak var displayLabel: UILabel!
-    
-    
     
     @IBAction func calcButtonPressed(_ sender: UIButton) {
         
-        //What should happen when a non-number button is pressed
-    
+        isFinishedTypingNumber = true
     }
-
     
     @IBAction func numButtonPressed(_ sender: UIButton) {
         
-        
+        if let number = sender.currentTitle {
+            if isFinishedTypingNumber {
+                displayLabel.text = number
+                
+                isFinishedTypingNumber = false
+            } else {
+                displayLabel.text?.append(number)
+            }
+        }
     
     }
 
