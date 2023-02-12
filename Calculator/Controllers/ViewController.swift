@@ -10,6 +10,8 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    private var calculator = CalculatorModel()
+    
     private var isFinishedTypingNumber: Bool = true
     private var displayValue: Double {
         get {
@@ -19,7 +21,13 @@ class ViewController: UIViewController {
         }
         
         set {
-            displayLabel.text = String(newValue)
+            let decimalPlaces = String(newValue).components(separatedBy: ".")
+            
+            if decimalPlaces.last == "0" {
+                displayLabel.text = String(decimalPlaces.first!)
+            } else {
+                displayLabel.text = String(newValue)
+            }
         }
     }
     
@@ -29,12 +37,13 @@ class ViewController: UIViewController {
         
         isFinishedTypingNumber = true
         
+        calculator.setNumber(displayValue)
+        
         if let calcMethod = sender.currentTitle {
-            let calculator = CalculatorModel(number: displayValue)
             
-            guard let result = calculator.calculate(symbol: calcMethod) else { fatalError("The result of the calculation is nil.") }
-            
-            displayValue = result
+            if let result = calculator.calculate(symbol: calcMethod) {
+                displayValue = result
+            }
         }
     }
     
